@@ -83,7 +83,7 @@
             "description": "Update affiliate profile.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"referral_code\": \"string\",\n  \"phone\": \"string\",\n  \"address\": \"string\",\n  \"bank_account_details\": \"string\",\n  \"upi_id\": \"string\",\n  \"profile_image_url\": \"string\"\n}",
+              "raw": "{\n  \"referral_code\": \"string\",\n  \"phone\": \"string\",\n  \"address\": \"string\",\n  \"bank_account_details\": \"string\",\n  \"bank_name\": \"string\",\n  \"account_number\": \"string\",\n  \"payout_method\": \"string\",\n  \"upi_id\": \"string\",\n  \"profile_image_url\": \"string\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -304,7 +304,7 @@
             "description": "Register a new user as an affiliate.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"string\",\n  \"full_name\": \"string\",\n  \"phone\": \"string\",\n  \"address\": \"string\",\n  \"bank_account_details\": \"string\",\n  \"upi_id\": \"string\"\n}",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"string\",\n  \"full_name\": \"string\",\n  \"phone\": \"string\",\n  \"address\": \"string\",\n  \"bank_account_details\": \"string\",\n  \"bank_name\": \"string\",\n  \"account_number\": \"string\",\n  \"payout_method\": \"string\",\n  \"upi_id\": \"string\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

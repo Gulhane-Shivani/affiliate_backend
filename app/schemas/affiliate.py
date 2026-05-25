@@ -10,6 +10,9 @@ class AffiliateRegister(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None
     bank_account_details: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    payout_method: Optional[str] = None
     upi_id: Optional[str] = None
 
 
@@ -18,6 +21,9 @@ class AffiliateBase(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None
     bank_account_details: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    payout_method: Optional[str] = None
     upi_id: Optional[str] = None
     profile_image_url: Optional[str] = None
 
@@ -48,6 +54,9 @@ class AffiliatePublic(BaseModel):
     phone: Optional[str]
     address: Optional[str]
     bank_account_details: Optional[str]
+    bank_name: Optional[str]
+    account_number: Optional[str]
+    payout_method: Optional[str]
     upi_id: Optional[str]
     profile_image_url: Optional[str]
     total_earnings: float
