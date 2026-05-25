@@ -43,35 +43,46 @@ def register_customer(
         affiliate_id=affiliate.id,
         customer_name=payload.customer_name,
         customer_email=payload.customer_email,
-        status="converted",
+        status="converted" if payload.purchase_amount > 0.0 else "pending",
         purchase_amount=payload.purchase_amount
     )
     db.add(db_referral)
     db.flush()
     
-    # 4. Calculate commission (10%)
-    commission_amount = round(payload.purchase_amount * 0.10, 2)
-    db_commission = Commission(
-        referral_id=db_referral.id,
-        affiliate_id=affiliate.id,
-        amount=commission_amount,
-        status="pending",
-        created_at=datetime.utcnow()
-    )
-    db.add(db_commission)
-    
-    # 5. Update affiliate's total earnings
-    affiliate.total_earnings += commission_amount
-    
-    # 6. Push real-time notification
-    db_notification = Notification(
-        affiliate_id=affiliate.id,
-        type="referral",
-        message=f"New Conversion! {payload.customer_name} subscribed to {payload.product_name}. Commission of ₹{commission_amount:.2f} credited.",
-        is_read=False,
-        created_at=datetime.utcnow()
-    )
-    db.add(db_notification)
+    if payload.purchase_amount > 0.0:
+        # 4. Calculate commission (10%)
+        commission_amount = round(payload.purchase_amount * 0.10, 2)
+        db_commission = Commission(
+            referral_id=db_referral.id,
+            affiliate_id=affiliate.id,
+            amount=commission_amount,
+            status="pending",
+            created_at=datetime.utcnow()
+        )
+        db.add(db_commission)
+        
+        # 5. Update affiliate's total earnings
+        affiliate.total_earnings += commission_amount
+        
+        # 6. Push real-time conversion notification
+        db_notification = Notification(
+            affiliate_id=affiliate.id,
+            type="referral",
+            message=f"New Conversion! {payload.customer_name} subscribed to {payload.product_name}. Commission of ₹{commission_amount:.2f} credited.",
+            is_read=False,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_notification)
+    else:
+        # Push lead registration notification
+        db_notification = Notification(
+            affiliate_id=affiliate.id,
+            type="referral",
+            message=f"New Lead! {payload.customer_name} registered using your referral link.",
+            is_read=False,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_notification)
     
     db.commit()
     return {"status": "success", "message": "Customer registered and referred successfully"}
