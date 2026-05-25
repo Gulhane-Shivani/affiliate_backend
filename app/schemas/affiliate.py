@@ -1,7 +1,17 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from uuid import UUID
 from .user import User
+
+class AffiliateRegister(BaseModel):
+    email: EmailStr
+    password: str
+    full_name: str
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    bank_account_details: Optional[str] = None
+    upi_id: Optional[str] = None
+
 
 class AffiliateBase(BaseModel):
     referral_code: Optional[str] = None

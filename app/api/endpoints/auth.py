@@ -1,5 +1,7 @@
 from datetime import timedelta
 from typing import Any
+import random
+import string
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -7,8 +9,8 @@ from sqlalchemy.orm import Session
 from ...core import security
 from ...core.config import settings
 from ...core.database import get_db
-from ...models import User
-from ...schemas import Token, User as UserSchema
+from ...models import User, Affiliate
+from ...schemas import Token, User as UserSchema, AffiliateRegister, AffiliatePublic
 
 router = APIRouter()
 
@@ -46,3 +48,71 @@ def forgot_password(email: str, db: Session = Depends(get_db)) -> Any:
         )
     # In a real app, send email here
     return {"msg": "Password recovery email sent"}
+
+@router.post("/register", response_model=AffiliatePublic)
+def register_affiliate(
+    *,
+    db: Session = Depends(get_db),
+    register_in: AffiliateRegister,
+) -> Any:
+    """
+    Register a new user as an affiliate.
+    """
+    # Check if user already exists
+    user_exists = db.query(User).filter(User.email == register_in.email).first()
+    if user_exists:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this email already exists in the system.",
+        )
+    
+    # Create User
+    new_user = User(
+        email=register_in.email,
+        hashed_password=security.get_password_hash(register_in.password),
+        full_name=register_in.full_name,
+        is_active=True
+    )
+    db.add(new_user)
+    db.flush() # get the user ID
+    
+    # Generate unique referral code
+    base_code = "".join(register_in.full_name.split())[:5].upper()
+    random_suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    referral_code = f"{base_code}{random_suffix}"
+    
+    # Ensure referral code uniqueness
+    while db.query(Affiliate).filter(Affiliate.referral_code == referral_code).first():
+        random_suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        referral_code = f"{base_code}{random_suffix}"
+        
+    # Create Affiliate Profile
+    new_affiliate = Affiliate(
+        user_id=new_user.id,
+        referral_code=referral_code,
+        phone=register_in.phone,
+        address=register_in.address,
+        bank_account_details=register_in.bank_account_details,
+        upi_id=register_in.upi_id,
+        profile_image_url=f"https://ui-avatars.com/api/?name={new_user.full_name.replace(' ', '+')}&background=random",
+        total_earnings=0.0,
+        paid_earnings=0.0
+    )
+    db.add(new_affiliate)
+    db.commit()
+    db.refresh(new_affiliate)
+    
+    return {
+        "id": new_affiliate.id,
+        "full_name": new_user.full_name,
+        "email": new_user.email,
+        "referral_code": new_affiliate.referral_code,
+        "phone": new_affiliate.phone,
+        "address": new_affiliate.address,
+        "bank_account_details": new_affiliate.bank_account_details,
+        "upi_id": new_affiliate.upi_id,
+        "profile_image_url": new_affiliate.profile_image_url,
+        "total_earnings": new_affiliate.total_earnings,
+        "paid_earnings": new_affiliate.paid_earnings,
+    }
+

@@ -283,6 +283,36 @@
             "description": "Password recovery"
           },
           "response": []
+        },
+        {
+          "name": "Register Affiliate",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user as an affiliate.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"string\",\n  \"full_name\": \"string\",\n  \"phone\": \"string\",\n  \"address\": \"string\",\n  \"bank_account_details\": \"string\",\n  \"upi_id\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
         }
       ]
     },
