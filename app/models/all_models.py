@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Float
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Float, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
@@ -33,6 +33,8 @@ class Affiliate(Base):
     profile_image_url = Column(String)
     total_earnings = Column(Float, default=0.0)
     paid_earnings = Column(Float, default=0.0)
+    total_clicks = Column(Integer, default=0)
+    active_campaigns = Column(Integer, default=0)
     
     user = relationship("User", back_populates="affiliate_profile")
     referrals = relationship("Referral", back_populates="affiliate")

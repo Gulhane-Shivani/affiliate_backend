@@ -39,6 +39,8 @@ class AffiliateInDBBase(AffiliateBase):
     user_id: UUID
     total_earnings: float
     paid_earnings: float
+    total_clicks: int
+    active_campaigns: int
 
     class Config:
         from_attributes = True
@@ -61,6 +63,8 @@ class AffiliatePublic(BaseModel):
     profile_image_url: Optional[str]
     total_earnings: float
     paid_earnings: float
+    total_clicks: int
+    active_campaigns: int
 
     class Config:
         from_attributes = True

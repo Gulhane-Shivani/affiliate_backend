@@ -36,7 +36,9 @@ def seed_data():
         upi_id="johndoe@upi",
         profile_image_url="https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff",
         total_earnings=2500.0,
-        paid_earnings=1800.0
+        paid_earnings=1800.0,
+        total_clicks=1250,
+        active_campaigns=5
     )
     db.add(affiliate)
     db.flush()

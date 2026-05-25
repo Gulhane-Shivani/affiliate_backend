@@ -19,14 +19,17 @@ def get_dashboard_stats(
     """
     total_referrals = db.query(Referral).filter(Referral.affiliate_id == current_affiliate.id).count()
     total_earnings = current_affiliate.total_earnings
-    paid_commissions = current_affiliate.paid_earnings
-    pending_commissions = total_earnings - paid_commissions
+    paid_earnings = current_affiliate.paid_earnings
+    pending_earnings = total_earnings - paid_earnings
+    total_clicks = current_affiliate.total_clicks
+    active_campaigns = current_affiliate.active_campaigns
     
-    # Monthly earnings (last 30 days)
-    last_month = datetime.utcnow() - timedelta(days=30)
+    # This Month earnings (current calendar month)
+    today = datetime.utcnow()
+    first_day_of_month = datetime(today.year, today.month, 1)
     monthly_earnings = db.query(func.sum(Commission.amount)).filter(
         Commission.affiliate_id == current_affiliate.id,
-        Commission.created_at >= last_month
+        Commission.created_at >= first_day_of_month
     ).scalar() or 0.0
     
     # Conversion rate
@@ -37,12 +40,14 @@ def get_dashboard_stats(
     conversion_rate = (converted_referrals / total_referrals * 100) if total_referrals > 0 else 0.0
     
     return {
-        "total_referrals": total_referrals,
         "total_earnings": total_earnings,
-        "pending_commission": pending_commissions,
-        "paid_commission": paid_commissions,
-        "monthly_earnings": monthly_earnings,
+        "pending_earnings": pending_earnings,
+        "paid_earnings": paid_earnings,
+        "total_clicks": total_clicks,
+        "total_referrals": total_referrals,
         "conversion_rate": round(conversion_rate, 2),
+        "active_campaigns": active_campaigns,
+        "this_month_earnings": monthly_earnings,
     }
 
 @router.get("/referral-growth")

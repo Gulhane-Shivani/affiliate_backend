@@ -30,6 +30,8 @@ def read_affiliate_profile(
         "profile_image_url": current_affiliate.profile_image_url,
         "total_earnings": current_affiliate.total_earnings,
         "paid_earnings": current_affiliate.paid_earnings,
+        "total_clicks": current_affiliate.total_clicks,
+        "active_campaigns": current_affiliate.active_campaigns,
     }
 
 @router.put("/profile", response_model=AffiliatePublic)
@@ -65,4 +67,6 @@ def update_affiliate_profile(
         "profile_image_url": current_affiliate.profile_image_url,
         "total_earnings": current_affiliate.total_earnings,
         "paid_earnings": current_affiliate.paid_earnings,
+        "total_clicks": current_affiliate.total_clicks,
+        "active_campaigns": current_affiliate.active_campaigns,
     }
