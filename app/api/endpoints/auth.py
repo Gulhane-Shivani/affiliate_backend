@@ -99,16 +99,18 @@ def register_affiliate(
         upi_id=register_in.upi_id,
         profile_image_url=f"https://ui-avatars.com/api/?name={new_user.full_name.replace(' ', '+')}&background=random",
         total_earnings=0.0,
-        paid_earnings=0.0
+        paid_earnings=0.0,
+        total_clicks=0,
+        active_campaigns=0
     )
     db.add(new_affiliate)
     db.commit()
     db.refresh(new_affiliate)
-    
+
     return {
         "id": new_affiliate.id,
-        "full_name": new_user.full_name,
-        "email": new_user.email,
+        "full_name": new_affiliate.user.full_name,
+        "email": new_affiliate.user.email,
         "referral_code": new_affiliate.referral_code,
         "phone": new_affiliate.phone,
         "address": new_affiliate.address,
@@ -120,5 +122,7 @@ def register_affiliate(
         "profile_image_url": new_affiliate.profile_image_url,
         "total_earnings": new_affiliate.total_earnings,
         "paid_earnings": new_affiliate.paid_earnings,
+        "total_clicks": new_affiliate.total_clicks,
+        "active_campaigns": new_affiliate.active_campaigns,
     }
 
